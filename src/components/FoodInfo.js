@@ -2,14 +2,14 @@ import { useState } from "react";
 import { BiDetail, BiTrash, BiEdit } from "react-icons/bi";
 import { Pie } from "react-chartjs-2";
 
-const FoodInfo = ({}) => {
+const FoodInfo = ({ food }) => {
   let [toggleFoodInfo, setToggleFoodInfo] = useState(false);
 
-  let countProtein = 60.3;
-  let countFat = 11.0;
-  let countCarbohydrate = 3.25;
-  let countCalories = 263;
-  let foodName = "FoodInfo";
+  let countProtein = food.countProtein;
+  let countFat = food.countFat;
+  let countCarbohydrate = food.countCarbohydrate;
+  let countCalories = food.countCalories;
+  let foodName = food.name;
 
   const data = {
     labels: [
@@ -24,7 +24,7 @@ const FoodInfo = ({}) => {
       (
         (countCarbohydrate * 100) /
         (countProtein + countFat + countCarbohydrate)
-      ).toFixed(1) + "% Sugar",
+      ).toFixed(1) + "% Carbohydrate",
     ],
     datasets: [
       {
@@ -57,6 +57,11 @@ const FoodInfo = ({}) => {
           <span className="flex-none font-medium text-2xl text-gray-500">
             {foodName}
           </span>
+          <span className="flex-none font-small text-1xl text-gray-500">
+            &nbsp;&nbsp;
+            {"(" + food.portionCount + food.portionText + ")"}
+          </span>
+
           <span className="flex-grow text-right">
             {" "}
             <button
@@ -94,16 +99,16 @@ const FoodInfo = ({}) => {
               <tbody>
                 <tr>
                   <td className="text-5xl text-center text-slate-500 pt-5">
-                    {countFat.toFixed(2)}
+                    {countFat.toFixed(2) + "g"}
                   </td>
                   <td className="text-5xl text-center text-slate-500 pt-5">
-                    {countProtein.toFixed(2)}
+                    {countProtein.toFixed(2) + "g"}
                   </td>
                   <td className="text-5xl text-center text-slate-500 pt-5">
-                    {countCarbohydrate.toFixed(2)}
+                    {countCarbohydrate.toFixed(2) + "g"}
                   </td>
                   <td className="text-5xl text-center text-slate-500 pt-5">
-                    {countCalories.toFixed(2)}
+                    {countCalories.toFixed(2) + "kcal"}
                   </td>
                 </tr>
               </tbody>
