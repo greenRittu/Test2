@@ -2,13 +2,13 @@ import { useState } from "react";
 import { BiDetail, BiTrash, BiEdit } from "react-icons/bi";
 import { Pie } from "react-chartjs-2";
 
-const FoodInfo = ({ food }) => {
+const FoodInfo = ({ food, onDeleteFood, setEditedFood }) => {
   let [toggleFoodInfo, setToggleFoodInfo] = useState(false);
 
-  let countProtein = food.countProtein;
-  let countFat = food.countFat;
-  let countCarbohydrate = food.countCarbohydrate;
-  let countCalories = food.countCalories;
+  let countProtein = parseFloat(food.countProtein);
+  let countFat = parseFloat(food.countFat);
+  let countCarbohydrate = parseFloat(food.countCarbohydrate);
+  let countCalories = parseFloat(food.countCalories);
   let foodName = food.name;
 
   const data = {
@@ -45,15 +45,23 @@ const FoodInfo = ({ food }) => {
     ],
   };
 
+  function deleteItem() {
+    onDeleteFood(food.id);
+  }
+
+  function editItem() {
+    setEditedFood(food);
+  }
+
   return (
     <li className="px-0 py-1 flex items-start">
-      <div
-        className="flex-grow rounded-md bg-gray-100 p-2"
-        onClick={() => {
-          setToggleFoodInfo(!toggleFoodInfo);
-        }}
-      >
-        <div className="flex items-center">
+      <div className="flex-grow rounded-md bg-gray-100 p-2">
+        <div
+          className="flex items-center"
+          onClick={() => {
+            setToggleFoodInfo(!toggleFoodInfo);
+          }}
+        >
           <span className="flex-none font-medium text-2xl text-gray-500">
             {foodName}
           </span>
@@ -120,18 +128,14 @@ const FoodInfo = ({ food }) => {
               <span className="flex-grow text-right">
                 <button
                   type="button"
-                  onClick={() => {
-                    setToggleFoodInfo(!toggleFoodInfo);
-                  }}
+                  onClick={editItem}
                   className="p-2 ml-1 mr-0 mt-0 rounded text-white bg-green-500 hover:bg-green-700 text-2xl"
                 >
                   <BiEdit />
                 </button>
                 <button
                   type="button"
-                  onClick={() => {
-                    setToggleFoodInfo(!toggleFoodInfo);
-                  }}
+                  onClick={deleteItem}
                   className="p-2 ml-1 mr-0 mt-0 rounded text-white bg-red-400 hover:bg-red-700 text-2xl"
                 >
                   <BiTrash />

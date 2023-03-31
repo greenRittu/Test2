@@ -5,7 +5,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import AddFood from "./components/AddFood";
 import Search from "./components/Search";
 import FoodInfo from "./components/FoodInfo";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -19,7 +19,6 @@ function Data(props) {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(null);
   const [textError, setTextError] = useState("");
-  const [foodList, setFoodList] = useState([]);
 
   useEffect(() => {
     setLoading(true);
@@ -52,6 +51,65 @@ function Data(props) {
 
 export default function App() {
   const [foodList, setFoodList] = useState([]);
+  const [loading, setLoading] = useState(null);
+  const [editedFood, setEditedFood] = useState(null);
+
+  const fetchData = () => {
+    setFoodList([]);
+    fetch("http://127.0.0.1:8000/api/foods/", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setFoodList(data);
+        console.log(data);
+        //setFoodList([]);
+      });
+  };
+
+  const setFood = (food) => {
+    setLoading(true);
+    fetch(`http://127.0.0.1:8000/api/foods/` + (food.id ? food.id + "/" : ""), {
+      method: food.id ? "PUT" : "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(food),
+    })
+      .then((response) => response.json())
+      .then(() => {
+        fetchData();
+        setEditedFood(null);
+        console.log("Food added: " + food.name);
+      });
+    setLoading(false);
+  };
+
+  const deleteFood = (id) => {
+    setLoading(true);
+    fetch("http://127.0.0.1:8000/api/foods/" + id + "/", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+    })
+      //.then((response) => response.json())
+      .then(() => {
+        fetchData();
+        console.log("Food deleted: " + id);
+      });
+    setLoading(false);
+  };
+
+  const editFood = (food) => {
+    fetch(`http://127.0.0.1:8000/api/foods/`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(food),
+    })
+      .then((response) => response.json())
+      .then(() => {
+        fetchData();
+        console.log("Food added: " + food.name);
+      });
+  };
 
   return (
     <div className="App container mx-auto mt-4 font-thin bg-gray-200 p-2 rounded-md">
@@ -60,11 +118,20 @@ export default function App() {
         List of Food
       </h3>
       <Data inputValue={foodList} onInputValueChange={setFoodList} />
-      <AddFood />
+      <AddFood
+        onSendFood={setFood}
+        editedFood={editedFood}
+        setEditedFood={setEditedFood}
+      />
       <Search />
       <ul>
         {foodList.map((food) => (
-          <FoodInfo key={food.id} food={food} />
+          <FoodInfo
+            key={food.id}
+            food={food}
+            onDeleteFood={deleteFood}
+            setEditedFood={setEditedFood}
+          />
         ))}
       </ul>
     </div>
