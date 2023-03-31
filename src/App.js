@@ -53,10 +53,11 @@ export default function App() {
   const [foodList, setFoodList] = useState([]);
   const [loading, setLoading] = useState(null);
   const [editedFood, setEditedFood] = useState(null);
+  const [searchText, setSearchText] = useState("");
 
-  const fetchData = () => {
+  const fetchData = (name) => {
     setFoodList([]);
-    fetch("http://127.0.0.1:8000/api/foods/", {
+    fetch("http://127.0.0.1:8000/api/foods/" + (name ? "?name=" + name : ""), {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     })
@@ -123,7 +124,11 @@ export default function App() {
         editedFood={editedFood}
         setEditedFood={setEditedFood}
       />
-      <Search />
+      <Search
+        searchText={searchText}
+        setSearchText={setSearchText}
+        fetchData={fetchData}
+      />
       <ul>
         {foodList.map((food) => (
           <FoodInfo

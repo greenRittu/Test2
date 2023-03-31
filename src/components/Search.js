@@ -1,6 +1,6 @@
 import { BiSearch, BiCaretDown, BiCheck } from "react-icons/bi";
 
-const Search = ({}) => {
+const Search = ({ searchText, setSearchText, fetchData }) => {
   return (
     <div className="py-2">
       <div className="mt-1 relative rounded-md shadow-sm">
@@ -12,6 +12,12 @@ const Search = ({}) => {
           type="text"
           name="query"
           id="query"
+          value={searchText}
+          onChange={(event) => {
+            setSearchText(event.target.value);
+            console.log(searchText + ":" + event.target.value);
+            fetchData(event.target.value);
+          }}
           className="pl-8 rounded-md focus:ring-blue-300 focus:border-blue-300 block w-full sm:text-sm border-blue-300 text-gray-500"
           placeholder="Search"
         />
